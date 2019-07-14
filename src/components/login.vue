@@ -2,7 +2,7 @@
   <div id="login">
     <input v-model="username" type="text" placeholder="username" class="login-input username" />
     <input v-model="password" type="password" placeholder="password" class="login-input password" />
-    <input type="button" class="login-button" value="check me" @click="checkUserData" />
+    <input type="button" class="login-button" value="log in" @click="checkUserData" />
   </div>
 </template>
 

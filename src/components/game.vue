@@ -69,11 +69,12 @@ export default {
   border: 1px solid rgb(141, 135, 135);
 
   width: 85%;
-  height: 30px;
+  height: 35px;
 
   color: rgb(95, 95, 95);
   font-weight: light;
-  font-size: 15px;  
+  font-size: 25px;  
+  text-align: center;
 }
 .game-button{
   cursor: pointer;
