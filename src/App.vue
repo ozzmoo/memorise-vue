@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <word-game></word-game>
+    <word-input></word-input>
   </div>
 </template>
 
