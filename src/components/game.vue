@@ -1,9 +1,41 @@
 <template>
   <div id="game">
-    <h3 class="rus">{{rus}}</h3>
-    <input v-model="eng" type="text" name id="eng-input" />
-    <input type="button" value="check" class="game-button" @click="checkWord" />
-    <input type="button" value="next" class="game-button" @click="getWord" />
+    <button
+      class="waves-effect waves-light btn show-units"
+      @click="getUnits(); showUnitList = !showUnitList">
+      Список ваших юнитов
+    </button>
+    <a
+      class="add-unit btn-floating btn-large waves-effect waves-light btn-small purple lighten-2"
+      @click="showAddWords = !showAddWords">
+      <i class="material-icons">add</i>
+    </a>
+
+    <br />
+    <div class="unit-list" v-if="showUnitList == true" >
+      <input
+        v-for="(item, index) in unitsList"
+        v-bind:key="index"
+        class="waves-effect waves-light btn purple lighten-3 unit-item"
+        type="button"
+        :value="item"
+        @click="setUnit(index)"
+      />
+
+    </div>
+
+    <div class="row">
+      <word-input class="col s12" v-if="showAddWords"></word-input>
+    </div>
+    <div class="row">
+      <div class="game-form col s6">
+        <h4 class="rus">{{rus}}</h4>
+        <input v-model="eng" type="text" name id="eng-input" />
+
+        <input type="button" value="check" class="waves-effect waves-light btn" @click="checkWord" />
+        <input type="button" value="next" class="waves-effect waves-light btn" @click="getWord" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -15,18 +47,25 @@ export default {
   data() {
     return {
       eng: "",
-      rus: "click next",
-      username: "ozzmo",
-      unit: "unit1",
-      checkeng: ""
+      rus: "click next to start",
+      username: "polina",
+      unit: "",
+      checkeng: "",
+      unitsList: [],
+      showAddWords: false,
+      showUnitList: false
     };
   },
   methods: {
+    setUnit: function(i) {
+      this.unit = this.unitsList[i];
+    },
+
     getWord: function() {
       const input = (document.getElementById(
         "eng-input"
       ).style.backgroundColor = "white");
-      this.eng = '' //Очищаем поле ввода
+      this.eng = ""; //Очищаем поле ввода
       axios
         .post("http://localhost:3000/game", {
           username: this.username,
@@ -54,6 +93,19 @@ export default {
         input.style.backgroundColor = "#ff4b4b94"; //В красный
         console.log("Ошибка");
       }
+    },
+    getUnits: function() {
+      this.unitsList.length = 0;
+      axios
+        .post("http://localhost:3000/units", { username: this.username })
+        .then(response => {
+          console.log(response.data[0]);
+          for (let item in response.data[0]) {
+            if (item != "username" && item != "_id" && item != "_id")
+              this.unitsList.push(item);
+          }
+          console.log(this.unitsList);
+        });
     }
   }
 };
@@ -62,52 +114,17 @@ export default {
 
 <style scoped>
 #game {
-  padding-left: 11px;
-  padding-right: 11px;
-  width: 200px;
-  display: grid;
-  grid-template-columns: 1fr;
+  margin-top: 50px;
 }
 
-#eng-input {
-  padding-left: 10px;
-  padding-right: 10px;
-  margin: 10px auto;
-  outline: none;
-  border: 1px solid rgb(141, 135, 135);
-
-  width: 85%;
-  height: 35px;
-
-  color: rgb(95, 95, 95);
-  font-weight: light;
-  font-size: 25px;
-  text-align: center;
+.show-units {
+  margin-bottom: 10px;
 }
-.game-button {
-  cursor: pointer;
-  margin: 10px auto;
-  outline: none;
-  border: 1px solid rgb(141, 135, 135);
-  background-color: rgba(255, 255, 255, 0);
-  width: 70%;
-  height: 30px;
-  padding: 2px 10px;
-  color: rgb(95, 95, 95);
-  font-weight: light;
-  font-size: 15px;
+.add-unit {
+  margin-bottom: 10px;
 }
 
-.game-button:active {
-  transition: 0.1s;
-  border: 2px solid rgb(145, 117, 117);
-}
-
-.rus {
-  text-align: center;
-  margin: 10px auto;
-  width: 100%;
-  color: rgb(95, 95, 95);
-  font-size: 30px;
+.unit-item {
+  margin: 5px;
 }
 </style>

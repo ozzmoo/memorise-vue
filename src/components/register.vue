@@ -1,8 +1,17 @@
 <template>
   <div id="reg">
-    <input v-model="username" type="text" placeholder="username" class="reg-input username" />
-    <input v-model="password" type="password" placeholder="password" class="reg-input password" />
-    <input type="button" class="reg-button" value="check me" @click="regNewUser" />
+    <div class="row">
+      <div class="input-field col s12">
+        <input v-model="username" id="user-name" type="text" class="validate" />
+        <label for="user-name">Username</label>
+      </div>
+
+      <div class="input-field col s6">
+        <input v-model="password" id="pass-word" type="Password" class="validate" />
+        <label for="pass-word">Password</label>
+      </div>
+    </div>
+    <input class="waves-effect waves-light btn" type="button" value="Sign up" @click="regNewUser(); sendRegStatus()"/>
   </div>
 </template>
 
@@ -13,12 +22,13 @@ export default {
   data() {
     return {
       password: "",
-      username: ""
+      username: "",
+      regStatus: false
     };
   },
   methods: {
     regNewUser: function() {
-      if (this.username.length > 0 && this.password > 0) {
+      if (this.username.length > 0 && this.password.length > 0) {
         axios
           .post("http://localhost:3000/reg", {
             login: this.username,
@@ -26,56 +36,25 @@ export default {
           })
           .then(response => {
             console.log(response.data);
+            this.regStatus = response.data.status
           })
           .catch(error => {
             console.log(error);
           });
       } else {
-        console.log("Пустые поля!")
+        console.log("Пустые поля!");
       }
+    },
+    sendRegStatus: function(){
+      this.$emit('regStatus', this.regStatus);
     }
   }
 };
 </script>
 
 <style scoped>
-#reg {
-  padding-left: 11px;
-  padding-right: 11px;
-  width: 200px;
-  display: grid;
-  grid-template-columns: 1fr;
-}
 
-.reg-input {
-  padding-left: 10px;
-  padding-right: 10px;
-  margin: 10px auto;
-  outline: none;
-  border: 1px solid rgb(141, 135, 135);
-
-  width: 85%;
-  height: 30px;
-
-  color: rgb(95, 95, 95);
-  font-weight: light;
-  font-size: 15px;
-}
-.reg-button {
-  margin: 10px auto;
-  outline: none;
-  border: 1px solid rgb(141, 135, 135);
-  background-color: rgba(255, 255, 255, 0);
-  width: 70%;
-  height: 30px;
-  padding: 2px 10px;
-  color: rgb(95, 95, 95);
-  font-weight: light;
-  font-size: 15px;
-}
-
-.reg-button:active {
-  transition: 0.2s;
-  border: 2px solid rgb(145, 117, 117);
+#reg{
+  margin-top: 100px;
 }
 </style>
